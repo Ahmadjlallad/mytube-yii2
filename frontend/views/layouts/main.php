@@ -10,6 +10,7 @@ use yii\bootstrap4\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
 
+
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
@@ -39,18 +40,19 @@ AppAsset::register($this);
         ['label' => 'About', 'url' => ['/site/about']],
         ['label' => 'Contact', 'url' => ['/site/contact']],
     ];
+    // user is a component defined in main file in config dir
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
+        $menuItems[] = [
+            'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+            "url" => ['/site/logout'],
+            // option to <a> element
+            'linkOptions' => [
+                'data-method' => 'post'
+            ]
+        ];
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav ml-auto'],

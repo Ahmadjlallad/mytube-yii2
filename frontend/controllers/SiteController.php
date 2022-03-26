@@ -6,6 +6,7 @@ use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\db\Query;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -24,11 +25,14 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
+    // if we go to the logo out with get var
+    // the behaviors will filter or block the request deandernt on the config
     public function behaviors()
     {
+        Yii::$app->name = "My Tube";
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout', 'signup'],
                 'rules' => [
                     [
@@ -44,7 +48,7 @@ class SiteController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
