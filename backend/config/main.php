@@ -8,6 +8,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-backend',
+    'name' => 'My Tube',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -41,9 +42,13 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                //TODO converted query param to normal param
+                'video/update/<video_id>' => 'video/update'
             ],
         ],
-
+        'assetManager' => [
+            'appendTimestamp' => true
+        ]
     ],
     'params' => $params,
 ];

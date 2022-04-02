@@ -3,18 +3,15 @@
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
 
-echo '<header>';
-
-
 NavBar::begin([
     'brandLabel' => Yii::$app->name,
     'brandUrl' => Yii::$app->homeUrl,
     'options' => [
-        'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+        'class' => 'navbar navbar-expand-md navbar-dark bg-dark shadow-sm',
     ],
 ]);
 $menuItems = [
-    ['label' => 'Home', 'url' => ['/site/index']],
+    ['label' => 'Create', 'url' => ['/video/create']],
 ];
 if (Yii::$app->user->isGuest) {
     $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
@@ -33,5 +30,4 @@ echo Nav::widget([
     'items' => $menuItems,
 ]);
 NavBar::end();
-echo '</header>';
 

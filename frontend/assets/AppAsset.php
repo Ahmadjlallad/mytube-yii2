@@ -3,6 +3,7 @@
 namespace frontend\assets;
 
 use yii\web\AssetBundle;
+use yii\web\JqueryAsset;
 
 /**
  * Main frontend application asset bundle.

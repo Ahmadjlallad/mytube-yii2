@@ -1,19 +1,23 @@
 <?php
 
-use yii\bootstrap4\Nav;
-
-echo Nav::widget([
-    'options' => [
-        'class' => 'd-flex nav-polls flex-column'
-    ],
-    'items' => [
-        [
-            'label' => 'Dashboard',
-            'url' => ['/site/index']
+use yii\bootstrap4\Nav; ?>
+<aside class="shadow">
+    <?= Nav::widget([
+        'options' => [
+            'class' => 'd-flex flex-column nav-pills'
         ],
-        [
-            'label' => 'Videos',
-            'url' => ['/videos/index']
-        ]
-    ],
-]);
+        'items' => [
+            [
+                'label' => 'Dashboard',
+                'url' => ['/site/'],
+                'active' => $this->context->route == 'site/index'
+            ],
+            [
+                'label' => 'Videos',
+                'url' => ['/video'],
+                'active' => $this->context->route == 'video/index'
+            ]
+        ],
+
+    ]); ?>
+</aside>

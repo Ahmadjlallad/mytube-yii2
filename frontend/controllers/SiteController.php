@@ -29,7 +29,6 @@ class SiteController extends Controller
     // the behaviors will filter or block the request deandernt on the config
     public function behaviors()
     {
-        Yii::$app->name = "My Tube";
         return [
             'access' => [
                 'class' => AccessControl::class,

@@ -8,7 +8,9 @@ $params = array_merge(
 
 return [
     'id' => 'app-frontend',
+    'name' => 'My Tube',
     'basePath' => dirname(__DIR__),
+    'defaultRoute' => '/video/',
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
@@ -42,7 +44,10 @@ return [
             'rules' => [
             ],
         ],
-
+        'assetManager' => [
+            'appendTimestamp' => true
+        ],
     ],
+
     'params' => $params,
 ];
