@@ -2,9 +2,9 @@
 /** @var Video $model */
 
 use common\models\Video;
-use yii\helpers\Url;
+use yii\bootstrap4\Html;
 use yii\widgets\Pjax;
-\yii\web\YiiAsset::register($this)
+
 ?>
 <div class="row">
     <div class="col-sm-8">
@@ -19,19 +19,18 @@ use yii\widgets\Pjax;
                 <!--allow us to user ajax and don't refresh the page
                                and the return from it will replace the element
                                -->
-                <?php Pjax::begin();?>
-                <a
-                   href="<?= Url::to(['/video/like', 'video_id' => $model->video_id]) ?>"
-                   data-method="post"
-                   class="btn btn-sm btn-outline-primary">
-                    <i class="fas fa-thumbs-up"></i>
-                </a>
-                <a data-pjax="1"
-                   href="<?= Url::to(['/video/dislike', 'video_id' => $model->video_id]) ?>"
-                   data-method="post"
-                   class="btn btn-sm btn-outline-secondary"><i class="fas fa-thumbs-down"></i> 1</a>
+                <?php Pjax::begin(); ?>
+                <?= $this->render('_button', [
+                    'model' => $model
+                ]) ?>
                 <?php Pjax::end() ?>
             </div>
+        </div>
+        <div>
+            <p><?= Html::a($model->createdBy->username, [
+                    '/channel/view', 'username' => $model->createdBy->username
+                ]) ?></p>
+            <p><?= Html::encode($model->description) ?></p>
         </div>
     </div>
     <div class="col-sm-4">

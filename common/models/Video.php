@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use common\models\query\UserQuery;
 use common\models\query\VideoQuery;
 use Imagine\Image\Box;
 use Yii;
@@ -28,7 +27,8 @@ use yii\web\UploadedFile;
  * @property string|null $video_name
  * @property int|null $created_at
  * @property int|null $updated_at
- *
+ * @property VideoLike[] $likes
+ * @property VideoLike[] $dislikes
  * @property User $createdBy
  */
 class Video extends ActiveRecord
@@ -56,7 +56,7 @@ class Video extends ActiveRecord
             // have to method created_at and updated_at
             TimestampBehavior::class,
             [
-                // have to method mange created_by and updated_at
+                // have to method mange created_by and updated_by
                 'class' => BlameableBehavior::class,
                 'updatedByAttribute' => false
             ]
@@ -203,5 +203,38 @@ class Video extends ActiveRecord
         if (file_exists($thumbnailPath)) {
             unlink($thumbnailPath);
         }
+    }
+
+    public function isLikedBy($userId)
+    {
+        return VideoLike::find()
+            ->userIdVideoId($userId, $this->video_id)
+            ->liked()
+            ->one();
+    }
+
+    public function isDislikedBy($userId)
+    {
+        VideoLike::find()
+            ->userIdVideoId($userId, $this->video_id)
+            ->disliked()
+            ->one();
+    }
+
+    /**
+     * Gets query for [[view]].
+     *
+     * @return ActiveQuery
+     */
+    public function getLikes()
+    { // magic property will be views
+        return $this->hasMany(VideoLike::class, ['video_id' => 'video_id'])
+            ->liked();
+    }
+
+    public function getDislikes()
+    {
+        return $this->hasMany(VideoLike::class, ['video_id' => 'video_id'])
+            ->disliked();
     }
 }

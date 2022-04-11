@@ -1,8 +1,8 @@
 <?php
 
 use backend\assets\TagsInputAsset;
-use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Video */

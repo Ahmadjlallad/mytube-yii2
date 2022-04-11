@@ -7,6 +7,7 @@ use common\models\VideoLike;
 use common\models\VideoView;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -68,15 +69,48 @@ class VideoController extends Controller
 
     /**
      * @throws HttpException
+     * @throws StaleObjectException
      */
     public function actionLike($video_id)
     {
+        $user_id = Yii::$app->user->id;
         $video = $this->findVideo($video_id);
-        $videoLike = new VideoLike();
-        $videoLike->video_id = $video->video_id;
-        $videoLike->user_id = Yii::$app->user->id;
-        $videoLike->created_at = time();
-        $videoLike->save();
+        $videoLikeDislike = VideoLike::find()->userIdVideoId($user_id, $video_id)->one();
+        if (!$videoLikeDislike) {
+            $this->saveLikeDislike($video->video_id, VideoLike::TYPE_LIKE, $user_id);
+            // render without change the original view
+        } elseif ($videoLikeDislike->type == VideoLike::TYPE_LIKE) {
+            $videoLikeDislike->delete();
+        } else {
+            $videoLikeDislike->delete();
+            $this->saveLikeDislike($video->video_id, VideoLike::TYPE_LIKE, $user_id);
+        }
+        return $this->renderAjax('_button', [
+            'model' => $video
+        ]);
+    }
+
+    /**
+     * @throws StaleObjectException
+     * @throws HttpException
+     */
+    public function actionDislike($video_id)
+    {
+        $user_id = Yii::$app->user->id;
+        $video = $this->findVideo($video_id);
+        $videoLikeDislike = VideoLike::find()->userIdVideoId($user_id, $video_id)->one();
+        if (!$videoLikeDislike) {
+            $this->saveLikeDislike($video->video_id, VideoLike::TYPE_DISLIKE, $user_id);
+            // render without change the original view
+        } elseif ($videoLikeDislike->type == VideoLike::TYPE_DISLIKE) {
+            $videoLikeDislike->delete();
+        } else {
+            $videoLikeDislike->delete();
+            $this->saveLikeDislike($video->video_id, VideoLike::TYPE_DISLIKE, $user_id);
+        }
+        return $this->renderAjax('_button', [
+            'model' => $video
+        ]);
     }
 
     /**
@@ -89,5 +123,21 @@ class VideoController extends Controller
             throw new HttpException("video dose not exit");
         }
         return $video;
+    }
+
+    /**
+     *
+     * @param string $video_id
+     * @param $type int
+     * @param string $user_id
+     */
+    protected function saveLikeDislike($video_id, $type, $user_id)
+    {
+        $videoLikeDislike = new VideoLike();
+        $videoLikeDislike->video_id = $video_id;
+        $videoLikeDislike->user_id = $user_id;
+        $videoLikeDislike->created_at = time();
+        $videoLikeDislike->type = $type;
+        $videoLikeDislike->save();
     }
 }

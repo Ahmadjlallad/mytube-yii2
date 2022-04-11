@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -57,6 +58,17 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
+    }
+
+    /**
+     *
+     * @throws InvalidConfigException
+     */
+    public function getSubscribers()
+    {
+        // many-to-many table with subscribers is the junction table or middle table
+        return $this->hasMany(User::class, ['id'=> 'user_id'])
+            ->viaTable('subscriber', ['channel_id' => 'id']);
     }
 
     /**
@@ -209,5 +221,16 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    /** @return array|Subscriber */
+    public function isSubscribed($userId)
+    {
+        return Subscriber::find()->andWhere(
+            [
+                'channel_id' => $this->id,
+                'user_id' => $userId
+            ]
+        )->one();
     }
 }
